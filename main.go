@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/FakJeongTeeNhoi/api-gateway/controller"
+	"github.com/FakJeongTeeNhoi/api-gateway/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -26,11 +28,12 @@ func main() {
 
 	server.Use(cors.New(corsConfig))
 
-	api := server.Group("/api")
+	server.Use(middleware.SetAccountInfo())
 
 	// TODO: Add routes here
+	controller.InitReverseProxyRoutes(server)
 
-	err = server.Run(":3020")
+	err = server.Run(":8080")
 	if err != nil {
 		panic(err)
 	}

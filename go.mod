@@ -1,4 +1,4 @@
-module github.com/FakJeongTeeNhoi/template
+module github.com/FakJeongTeeNhoi/api-gateway
 
 go 1.22
 
