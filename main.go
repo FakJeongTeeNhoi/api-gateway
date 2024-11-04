@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/FakJeongTeeNhoi/api-gateway/controller"
 	"github.com/FakJeongTeeNhoi/api-gateway/middleware"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -21,12 +20,12 @@ func main() {
 
 	server := gin.Default()
 
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
-	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
-	corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-
-	server.Use(cors.New(corsConfig))
+	//corsConfig := cors.DefaultConfig()
+	//corsConfig.AllowAllOrigins = true
+	//corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	//corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	//
+	//server.Use(cors.New(corsConfig))
 
 	server.Use(middleware.SetAccountInfo())
 
