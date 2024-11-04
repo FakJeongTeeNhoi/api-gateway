@@ -40,8 +40,10 @@ func reverseProxy(c *gin.Context) {
 		return
 	}
 
+	url := targetURL + stripedPath + "?" + c.Request.URL.RawQuery
+
 	// call target URL
-	request, err := http.NewRequest(c.Request.Method, targetURL+stripedPath, c.Request.Body)
+	request, err := http.NewRequest(c.Request.Method, url, c.Request.Body)
 	if err != nil {
 		return
 	}
