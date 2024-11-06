@@ -20,7 +20,7 @@ func SetAccountInfo() gin.HandlerFunc {
 		}
 
 		// call UMS service to get account info with
-		req, err := http.NewRequest("GET", os.Getenv("UMS_URL")+"/api/auth/account-info", nil)
+		req, err := http.NewRequest("GET", os.Getenv("UMS_URL")+"/auth/account-info", nil)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
