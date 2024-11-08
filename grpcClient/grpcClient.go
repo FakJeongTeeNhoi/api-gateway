@@ -22,7 +22,6 @@ func NewClient() (*grpc.ClientConn, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	return conn, nil
 }

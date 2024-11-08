@@ -49,22 +49,25 @@ func reverseProxy(c *gin.Context) {
 	if c.Param("path") == "/grpc/space" {
 		// grpcClient
 		// if method is POST, call create
-		if c.Request.Method == "POST" {
-			createSpaceRequest := &pb.CreateSpaceRequest{}
-			err := c.BindJSON(createSpaceRequest)
-			if err != nil {
-				response.BadRequest("Failed to bind request").AbortWithError(c)
-				return
-			}
-
-			resp, err := grpcClient.SpaceClient.Client.CreateSpace(c, createSpaceRequest)
-			if err != nil {
-				response.InternalServerError(err.Error()).AbortWithError(c)
-				return
-			}
-
-			c.JSON(http.StatusOK, resp)
+		if c.Request.Method != "POST" {
+			response.BadRequest("Invalid method").AbortWithError(c)
+			return
 		}
+
+		createSpaceRequest := &pb.CreateSpaceRequest{}
+		err := c.BindJSON(createSpaceRequest)
+		if err != nil {
+			response.BadRequest("Failed to bind request").AbortWithError(c)
+			return
+		}
+
+		resp, err := grpcClient.SpaceClient.Client.CreateSpace(c, createSpaceRequest)
+		if err != nil {
+			response.InternalServerError(err.Error()).AbortWithError(c)
+			return
+		}
+
+		c.JSON(http.StatusOK, resp)
 
 		return
 	}
