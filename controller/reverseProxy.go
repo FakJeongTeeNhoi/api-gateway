@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	pb "github.com/FakJeongTeeNhoi/api-gateway/generated/space"
+	"github.com/FakJeongTeeNhoi/api-gateway/grpcClient"
 	"github.com/FakJeongTeeNhoi/api-gateway/model/response"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -16,6 +18,8 @@ func addReverseProxyRoutes() {
 	routesMapping["/space"] = os.Getenv("CMS_URL")
 	routesMapping["/reserve"] = os.Getenv("RMS_URL")
 	routesMapping["/report"] = os.Getenv("RPS_URL")
+	routesMapping["/grpc/space"] = os.Getenv("GRPC_URL")
+	routesMapping["/grpc/room"] = os.Getenv("GRPC_URL")
 }
 
 func InitReverseProxyRoutes(server *gin.Engine) {
@@ -26,7 +30,9 @@ func InitReverseProxyRoutes(server *gin.Engine) {
 func stripPath(path string) (string, string) {
 	// path must start with some in routesMapping
 	for key, value := range routesMapping {
-		if path == key || (len(key) < len(path) && path[len(key)] == '/') {
+		// check the prefix
+		if (len(path) == len(key) && path[:len(key)] == key) ||
+			(len(path) > len(key) && path[:len(key)] == key && path[len(key)] == '/') {
 			return path[len(key):], value
 		}
 	}
@@ -37,6 +43,29 @@ func reverseProxy(c *gin.Context) {
 	stripedPath, targetURL := stripPath(c.Param("path"))
 	if targetURL == "" {
 		response.BadRequest("Invalid path").AbortWithError(c)
+		return
+	}
+
+	if c.Param("path") == "/grpc/space" {
+		// grpcClient
+		// if method is POST, call create
+		if c.Request.Method == "POST" {
+			createSpaceRequest := &pb.CreateSpaceRequest{}
+			err := c.BindJSON(createSpaceRequest)
+			if err != nil {
+				response.BadRequest("Failed to bind request").AbortWithError(c)
+				return
+			}
+
+			resp, err := grpcClient.SpaceClient.Client.CreateSpace(c, createSpaceRequest)
+			if err != nil {
+				response.InternalServerError(err.Error()).AbortWithError(c)
+				return
+			}
+
+			c.JSON(http.StatusOK, resp)
+		}
+
 		return
 	}
 

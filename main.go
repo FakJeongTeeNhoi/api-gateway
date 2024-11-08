@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/FakJeongTeeNhoi/api-gateway/controller"
+	"github.com/FakJeongTeeNhoi/api-gateway/grpcClient"
 	"github.com/FakJeongTeeNhoi/api-gateway/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -19,6 +20,8 @@ func main() {
 	// TODO: Connect to database using gorm
 
 	server := gin.Default()
+
+	grpcClient.NewSpaceClient()
 
 	//corsConfig := cors.DefaultConfig()
 	//corsConfig.AllowAllOrigins = true
